@@ -1,0 +1,31 @@
+{% load static %}
+
+<header class="header">
+  <div class="container">
+    <a class="" href="{% url 'home' %}"><img src="{% static "images/logo.png" %}" alt="logo"></a>
+
+
+    <div class="header_links" id="navbarMain">
+      <ul class="">
+        <li class="">
+          <a class="" href="{% url 'home' %}">Inicio</a>
+        </li>
+        <li class="">
+          <a class="" href="{% url 'home' %}">Mis reservas</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="header_sub_menu">
+      {% if user.is_authenticated %}
+        <div class="header_sub_menu_user">
+          <span class="header_sub_menu_user_name">{{ user.username }}</span>
+          <a class="" href="">Cerrar sesión</a>
+        </div>
+        <img src="{% static "images/bell.png" %}" alt="Campana de notificaciones">
+      {% else %}
+        <a class="" href="">Iniciar sesión</a>
+      {% endif %}
+    </div>
+  </div>
+</header>

@@ -1,0 +1,136 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'inter', sans-serif;
+    text-decoration: none;
+    color: #64748b;
+    font-weight: 700;
+}
+
+h1, h2, h3 {
+    color: black;
+}
+
+a:hover{
+    color: #0055ff;
+}
+
+.header {
+    padding: 20px 50px;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
+}
+
+.header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header .container a img {
+    width: 130px;
+}
+
+.header_links ul {
+    display: flex;
+    gap: 25px;
+    list-style: none;
+}
+
+.header_sub_menu {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.header_sub_menu_user {
+    display: flex;
+    gap: 25px;
+}
+
+.header_sub_menu img {
+    width: 20px;
+    cursor: pointer;
+}
+
+main {
+    padding: 20px 50px;
+    background-color: #f8f8f8;
+}
+
+main h1 {
+    padding-bottom: 50px;
+}
+
+main .content{
+    display: flex;
+    gap: 30px;
+}
+
+main .content .services_list_container ul{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    list-style: none;
+}
+
+main .content .services_list_container ul li {
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+main .content .services_list_container ul li img{
+    width: 300px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px 10px 0px 0px;
+
+}
+
+main .content .services_list_container ul li img:hover{
+    transform: scale(1.05);
+    transition: all 0.3s ease-in-out;
+}
+
+main .content .services_list_container ul li div{
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.service_text {
+    display: block;
+}
+
+.service_button{
+    padding: 6px 15px;
+    background-color: #0055ff;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    width: 150px;
+    align-self: center;
+}
+
+.service_button:hover {
+    background-color: #0041cc;
+    color: white;
+}
+
+main .content .pendant_reservation_container {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 10px;
+    padding: 25px;
+    width: 50%;
+}
+
+.pendant_reservation_list {
+    list-style: none;
+    padding: 10px 0px;
+}

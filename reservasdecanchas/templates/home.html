@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <h1>Reserva tu cancha</h1>
+    <div class="content">
+        <div class="services_list_container">
+            <ul>
+                {% if types_of_service %}
+                    {% for type_of_service in types_of_service %}
+                        <li>
+                            <img src="{{ type_of_service.image.url }}" alt="Cancha de {{ type_of_service.name }}">
+                            <div>
+                                <h3>{{ type_of_service.name }}</h3>
+                                <span class="service_text">Precio por hora: {{ type_of_service.price_per_hour }} $</span>
+                                <span class="service_text">Techado: {{ type_of_service.with_roof|yesno:"Sí,No" }}</span>
+
+                                <a href="" class="service_button">Ver horarios</a>
+                            </div>
+                        </li>
+                    {% endfor %}
+                {% else %}
+                    <p>No hay servicios disponibles.</p>
+                {% endif %}
+            </ul>
+        </div>
+
+        <div class="pendant_reservation_container">
+            <h2>Reservas pendientes</h2>
+            <ul class="pendant_reservation_list">
+                <li>
+                    <p>No tienes reservas pendientes.</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}
