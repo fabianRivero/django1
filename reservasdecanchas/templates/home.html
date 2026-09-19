@@ -1,6 +1,13 @@
 {% extends 'layout.html' %}
 
+{% block title %}Página principal{% endblock title %}
+
 {% block content %}
+    <span class="welcome_message">
+        {% if request.user.username %}
+            Bienvenido, {{request.user.username}}
+        {% endif %}
+    </span>
     <h1>Reserva tu cancha</h1>
     <div class="content">
         <div class="services_list_container">
@@ -14,22 +21,19 @@
                                 <span class="service_text">Precio por hora: {{ type_of_service.price_per_hour }} $</span>
                                 <span class="service_text">Techado: {{ type_of_service.with_roof|yesno:"Sí,No" }}</span>
 
-                                <a href="" class="service_button">Ver horarios</a>
+                                <button 
+                                    hx-get="{% url 'open_calendar_modal' type_of_service.name %}" 
+                                    hx-target="#modal-container"
+                                > 
+                                    Ver Calendario
+                                </button>
                             </div>
                         </li>
                     {% endfor %}
+                    <div id="modal-container"></div>
                 {% else %}
                     <p>No hay servicios disponibles.</p>
                 {% endif %}
-            </ul>
-        </div>
-
-        <div class="pendant_reservation_container">
-            <h2>Reservas pendientes</h2>
-            <ul class="pendant_reservation_list">
-                <li>
-                    <p>No tienes reservas pendientes.</p>
-                </li>
             </ul>
         </div>
     </div>

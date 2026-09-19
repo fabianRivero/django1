@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}Iniciar sesión{% endblock title %}
+
+{% block content %}
+<div class="auth_form_container">
+    <h2>Iniciar sesión</h2>
+    <form method="POST" action="{% url "login" %}">
+        {% csrf_token %}
+        <div>
+            <label for="username">Nombre de usuario
+            <input type="text" name="username" id="username" required>
+            </label>
+        </div>
+
+        <div>
+            <label for="password">Contraseña
+            <input type="password" name="password" id="password" required>
+            </label>
+        </div>
+        <button type="submit">Iniciar sesión</button>
+    </form>
+
+    {% if error  %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <p>¿No tienes una cuenta? <a href="{% url "register" %}">Regístrate aquí.</a></p>
+</div>
+{% endblock content %}

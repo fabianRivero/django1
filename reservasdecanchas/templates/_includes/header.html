@@ -10,21 +10,26 @@
         <li class="">
           <a class="" href="{% url 'home' %}">Inicio</a>
         </li>
-        <li class="">
-          <a class="" href="{% url 'home' %}">Mis reservas</a>
-        </li>
+        {% if user.is_authenticated %}
+            <li class="">
+                <a class="" href="{% url 'reservations' %}">Mis reservas</a>
+            </li>
+        {% endif %}
+
       </ul>
     </div>
 
     <div class="header_sub_menu">
       {% if user.is_authenticated %}
         <div class="header_sub_menu_user">
-          <span class="header_sub_menu_user_name">{{ user.username }}</span>
-          <a class="" href="">Cerrar sesión</a>
+            <form action="{% url "logout" %}" method="POST">
+                {% csrf_token %}
+                <button class="" type="submit"">Cerrar sesión</button>
+            </form>
         </div>
         <img src="{% static "images/bell.png" %}" alt="Campana de notificaciones">
       {% else %}
-        <a class="" href="">Iniciar sesión</a>
+        <a class="" href="{% url 'login' %}">Iniciar sesión</a>
       {% endif %}
     </div>
   </div>

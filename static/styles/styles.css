@@ -16,6 +16,18 @@ a:hover{
     color: #0055ff;
 }
 
+button{
+    padding: 6px 15px;
+    background-color: #0055ff;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    width: 150px;
+    align-self: center;
+}
+
 .header {
     padding: 20px 50px;
     box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1);
@@ -53,25 +65,36 @@ a:hover{
     cursor: pointer;
 }
 
+.auth_form_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.auth_form_container form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 15px;
+}
+
 main {
     padding: 20px 50px;
     background-color: #f8f8f8;
 }
 
-main h1 {
-    padding-bottom: 50px;
-}
-
 main .content{
     display: flex;
-    gap: 30px;
+    justify-content: center;
 }
 
 main .content .services_list_container ul{
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
+    gap: 30px;
     list-style: none;
+    grid-template-columns: repeat(3, 1fr);
 }
 
 main .content .services_list_container ul li {
@@ -104,18 +127,6 @@ main .content .services_list_container ul li div{
     display: block;
 }
 
-.service_button{
-    padding: 6px 15px;
-    background-color: #0055ff;
-    color: white;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    text-align: center;
-    width: 150px;
-    align-self: center;
-}
-
 .service_button:hover {
     background-color: #0041cc;
     color: white;
@@ -134,3 +145,4 @@ main .content .pendant_reservation_container {
     list-style: none;
     padding: 10px 0px;
 }
+
