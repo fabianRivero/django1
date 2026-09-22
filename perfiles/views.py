@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .forms.register_form import RegisterForm
+from django.forms import ValidationError
 
 def register_view(request):
     if request.method == "POST":
@@ -40,5 +41,4 @@ def logout_view(request):
         logout(request)
         return redirect("login")
     else:
-        print("dfffffffffff")
-        return redirect("home")
+        raise ValidationError("No se puedo cerrar sesión.")

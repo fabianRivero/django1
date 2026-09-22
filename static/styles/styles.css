@@ -3,13 +3,17 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'inter', sans-serif;
-    text-decoration: none;
     color: #64748b;
     font-weight: 700;
 }
 
 h1, h2, h3 {
     color: black;
+}
+
+a {
+    text-decoration: none !important;
+    cursor: pointer !important;
 }
 
 a:hover{
@@ -20,12 +24,16 @@ button{
     padding: 6px 15px;
     background-color: #0055ff;
     color: white;
-    border-radius: 5px;
+    border-radius: 10px !important;
     border: none;
     cursor: pointer;
     text-align: center;
     width: 150px;
     align-self: center;
+}
+
+button:hover {
+    background-color: #0041cc !important;
 }
 
 .header {
@@ -127,11 +135,6 @@ main .content .services_list_container ul li div{
     display: block;
 }
 
-.service_button:hover {
-    background-color: #0041cc;
-    color: white;
-}
-
 main .content .pendant_reservation_container {
     display: flex;
     flex-direction: column;
@@ -146,3 +149,44 @@ main .content .pendant_reservation_container {
     padding: 10px 0px;
 }
 
+.pendant_reservation_list li div{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 5px;
+    border-bottom: 1px solid black;
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+
+.pendant_reservation_list li div button{
+    width: 200px;
+}
+
+.fc-daygrid-day.dia-con-horarios .fc-daygrid-day-frame {
+    background-color: #d1e7dd;
+    cursor: pointer;
+}
+
+.fc-daygrid-day.dia-con-horarios .fc-daygrid-day-number::after {
+    content: " · Horarios disponibles";
+    font-size: 0.7rem;
+    color: #0f5132;
+    font-weight: 500;
+}
+
+.confirm-box {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.reservations_content {
+    display: flex;
+    flex-direction: column; 
+}

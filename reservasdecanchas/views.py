@@ -3,6 +3,10 @@ from tipo_de_servicio.models import TypeOfService
 from django.http import HttpResponseBadRequest, JsonResponse
 from reservas.models import Reservation
 from django.http import Http404
+from datetime import timedelta
+from django.utils.dateparse import parse_date
+from django.utils import timezone
+from django.utils.dateparse import parse_time
 
 context = {
     "types_of_service": TypeOfService.objects.all(),
@@ -11,17 +15,17 @@ context = {
 def home_view(request):
     return render(request, "home.html", context)
 
-# 1. Vista que devuelve el fragmento HTML para HTMX
+
 def open_calendar_modal(request, service_name):
     if not request.htmx:
-            return HttpResponseBadRequest("Esta vista solo admite peticiones HTMX.")
+        return HttpResponseBadRequest("Esta vista solo admite peticiones HTMX.")
     try:
-         n = TypeOfService.objects.get(name = service_name)
+        n = TypeOfService.objects.get(name = service_name)
     except TypeOfService.DoesNotExist:
-         raise Http404("No hay ningun servicio registrado.")
+        raise Http404("No hay ningun servicio registrado.")
     return render(request, "modal.html", {"service": n})
 
-# 2. Endpoint que alimenta los eventos del calendario
+
 def eventos_json(request):
     reservas = Reservation.objects.all()
     eventos = [
@@ -33,3 +37,63 @@ def eventos_json(request):
         for reserva in reservas
     ]
     return JsonResponse(eventos, safe=False)
+
+
+def disponibilidad_json(request, service_id):
+    inicio_str = request.GET.get('mes')
+    fin_str = request.GET.get('fin')
+
+    if not inicio_str or not fin_str:
+        return JsonResponse([], safe=False)
+
+    inicio = parse_date(inicio_str[:10])
+    fin = parse_date(fin_str[:10])
+
+    if not inicio or not fin:
+        return JsonResponse([], safe=False)
+
+    try:
+        service = TypeOfService.objects.get(id=service_id)
+    except TypeOfService.DoesNotExist:
+        return JsonResponse([], safe=False)
+
+    slots_del_rango = Reservation.objects.filter(
+        service=service,
+        date__gte=inicio,
+        date__lt=fin
+    )
+
+    ahora = timezone.localtime()
+    hoy = ahora.date()
+    hora_actual = ahora.time()
+
+    resultado = []
+    dia = inicio
+    while dia < fin:
+        if dia < hoy:
+            dia += timedelta(days=1)
+            continue
+
+        slots_del_dia = [res for res in slots_del_rango if res.date == dia]
+
+        slots_libres = [
+            {"id": res.id, "time": res.time_start.strftime("%H:%M")}
+            for res in slots_del_dia
+            if res.user is None and res.status == Reservation.States.OPEN
+        ]
+        
+        if dia == hoy:
+            slots_libres = [
+                slot for slot in slots_libres
+                if parse_time(slot["time"]) > hora_actual
+            ]
+
+        if slots_libres:
+            resultado.append({
+                "date": dia.isoformat(),
+                "horarios": slots_libres,
+            })
+
+        dia += timedelta(days=1)
+
+    return JsonResponse(resultado, safe=False)
