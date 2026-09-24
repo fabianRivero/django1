@@ -7,8 +7,12 @@
     font-weight: 700;
 }
 
+li {
+    list-decoration: none !important;
+}
+
 h1, h2, h3 {
-    color: black;
+    color: black !important;
 }
 
 a {
@@ -17,7 +21,11 @@ a {
 }
 
 a:hover{
-    color: #0055ff;
+    color: #0055ff !important; 
+}
+
+.error, .errorlist{
+    color: red !important;
 }
 
 button{
@@ -154,9 +162,12 @@ main .content .pendant_reservation_container {
     flex-direction: column;
     align-items: start;
     gap: 5px;
-    border-bottom: 1px solid black;
     padding-bottom: 20px;
     padding-top: 20px;
+}
+
+.pendant_reservation_list li div #cancel-confirmation {
+    border-bottom: 1px solid black
 }
 
 .pendant_reservation_list li div button{

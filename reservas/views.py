@@ -9,7 +9,6 @@ context = {}
 def reservation_view(request):
     user_reservations = Reservation.objects.filter(user = request.user)
     context.update({"reservations": user_reservations})
-    print(context)
     return render(request, "reservations.html", context)
 
 
@@ -21,9 +20,21 @@ def set_reservation_view(request, reservation_id):
         return HttpResponse(status=404)
 
     if reservation.user is not None:
-        # Ya está ocupada por otro usuario.
         return HttpResponse(status=409)
 
     reservation.book(request.user)
     reservation.save()
+    return HttpResponse(status=200)
+
+@login_required
+def cancel_reservation_view(request, reservation_id):
+    try:
+        reservation = Reservation.objects.get(id=reservation_id)
+    except Reservation.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if reservation.user_id != request.user.id:
+        return HttpResponse(status=403)
+
+    reservation.unbook()
     return HttpResponse(status=200)

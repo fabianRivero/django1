@@ -10,5 +10,9 @@
         {{form.as_p}}
         <button type="submit">Registrar</button>
     </form>
+
+    {% if error  %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
 </div>
 {% endblock content %}

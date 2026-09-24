@@ -4,20 +4,30 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .forms.register_form import RegisterForm
 from django.forms import ValidationError
+from .models import UserProfile
 
 def register_view(request):
+    error_message = None
+    
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password")
+
+            if User.objects.filter(username=username).exists():
+                error_message = "El nombre de usuario no está disponible."
+                return render(request, "register.html", {"form": form, "error": error_message})
+
             user = User.objects.create_user(username=username, password=password)
+            UserProfile.create_profile(user)
             login(request, user)
             return redirect("home")
-    else:
-        form = RegisterForm()
-        return render(request, "register.html", {"form": form})
 
+        return render(request, "register.html", {"form": form, "error": error_message})
+
+    form = RegisterForm()
+    return render(request, "register.html", {"form": form, "error": error_message})
 
 def login_view(request):
     error_message = None
@@ -41,4 +51,5 @@ def logout_view(request):
         logout(request)
         return redirect("login")
     else:
-        raise ValidationError("No se puedo cerrar sesión.")
+        raise ValidationError("No se pudo cerrar sesión.")
+

@@ -15,14 +15,16 @@
             <ul class="pendant_reservation_list">
                 {% if reservations %}
                     {% for reservation in reservations %}
-                        <li>
-                            <div>
+                        <li class="reservation-item">
+                            <div id="reservation_box">
                                 <h3>{{ reservation.service }}</h3>
                                 <span class="service_text">Precio por hora: {{ reservation.service.price_per_hour }} $</span>
                                 <span class="service_text">Techado: {{ reservation.service.with_roof|yesno:"Sí,No" }}</span>
                                 <span class="service_text">Hora del inicio: {{ reservation.time_start }}</span>
                                 <span class="service_text">Hora del final: {{ reservation.time_end }}</span>
-                                <button class="">Cancelar reserva</button>
+                                <button class="cancel-button" data-reservation="{{ reservation.id }}">
+                                    Cancelar reserva
+                                </button>
                             </div>
                         </li>
                     {% endfor %}
@@ -33,4 +35,64 @@
         </div>
     </div>
 
+{% endblock %}
+
+{% block script %}
+<script>
+(function () {
+    const list = document.querySelector('.pendant_reservation_list');
+    if (!list) return;
+
+    list.addEventListener('click', function (e) {
+        const btn = e.target.closest('.cancel-button');
+        if (!btn) return;
+
+        const li = btn.closest('.reservation-item');
+        if (!li) return;
+
+        // Si ya hay un cuadro de confirmación abierto en este li, no hacemos nada.
+        const existing = li.querySelector('.confirm-box');
+        if (existing) return;
+
+        const reservationId = btn.dataset.reservation;
+
+        // Creamos el cuadro de confirmación.
+        const box = document.createElement('div');
+        box.className = 'confirm-box';
+        box.innerHTML = `
+            <p>¿Seguro querés cancelar esta reserva?</p>
+            <button class="btn btn-success btn-sm btn-confirm-yes">Sí</button>
+            <button class="btn btn-secondary btn-sm btn-confirm-no">No</button>
+        `;
+        li.appendChild(box);
+
+        // Botón "Sí": llama al backend para cancelar.
+        box.querySelector('.btn-confirm-yes').addEventListener('click', function () {
+            fetch(`/reservas/cancelar/${reservationId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCsrfToken(),
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }).then(r => {
+                if (r.ok) {
+                    li.remove();   // Sacamos la reserva de la lista.
+                } else {
+                    alert('No se pudo cancelar. Probá de nuevo.');
+                }
+            });
+        });
+
+        // Botón "No": cierra el cuadro.
+        box.querySelector('.btn-confirm-no').addEventListener('click', function () {
+            box.remove();
+        });
+    });
+
+    function getCsrfToken() {
+        const cookie = document.cookie.split('; ').find(c => c.startsWith('csrftoken='));
+        return cookie ? cookie.split('=')[1] : '';
+    }
+})();
+</script>
 {% endblock %}

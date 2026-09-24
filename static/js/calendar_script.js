@@ -57,18 +57,18 @@ document.body.addEventListener('htmx:afterSwap', function (event) {
           return;
         }
 
-          container.innerHTML = `
-          <h6>Horarios disponibles — ${info.dateStr}</h6>
-          <div class="d-flex flex-wrap gap-2">
-            ${horarios.map(h => `
-                <div class="horario-item">
-                    <button class="btn btn-outline-primary btn-sm btn-horario"
-                      data-reservation="${h.id}">
-                      ${h.time}
-                    </button>
-                </div>
-            `).join('')}
-          </div>
+        container.innerHTML = `
+        <h6>Horarios disponibles — ${info.dateStr}</h6>
+        <div class="d-flex flex-wrap gap-2">
+          ${horarios.map(h => `
+              <div class="horario-item">
+                  <button class="btn btn-outline-primary btn-sm btn-horario"
+                    data-reservation="${h.id}">
+                    ${h.time}
+                  </button>
+              </div>
+          `).join('')}
+        </div>
         `;
 
         container.addEventListener('click', function (e) {
@@ -79,7 +79,7 @@ document.body.addEventListener('htmx:afterSwap', function (event) {
       },
     });
 
-    calendar.render();
+  calendar.render();
 });
 
 
