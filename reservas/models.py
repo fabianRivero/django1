@@ -95,8 +95,8 @@ class RecurringReservation(models.Model):
 class Reservation(models.Model):
 
     class States(models.TextChoices):
-        OPEN = 'Disponible'
-        TAKEN = 'tomada'
+        OPEN = 'open'         
+        TAKEN = 'taken' 
 
     recurring_source = models.ForeignKey(
         RecurringReservation,

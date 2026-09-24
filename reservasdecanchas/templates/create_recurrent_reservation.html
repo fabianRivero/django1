@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block title %}Reserva recurrente{% endblock %}
+
+{% block content %}
+<h1>Crear reserva recurrente</h1>
+
+{% if messages %}
+    <ul class="messages">
+        {% for m in messages %}<li>{{ m }}</li>{% endfor %}
+    </ul>
+{% endif %}
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Crear regla</button>
+</form>
+{% endblock %}

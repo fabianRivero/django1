@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block title %}Interfaz de administrador{% endblock title %}
+
+{% block content %}
+
+    <h1>Interfaz de administrador</h1>
+
+    <div class="">
+        <nav>
+            <ul>
+                <li><a href="{% url 'crear_puntual' %}">Crear reserva puntual</a></li>
+                <li><a href="{% url 'crear_recurrente' %}">Crear reserva recurrente</a></li>
+            </ul>
+        </nav>
+    </div>
+
+{% endblock %}

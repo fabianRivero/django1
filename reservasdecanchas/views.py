@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from tipo_de_servicio.models import TypeOfService
 from django.http import HttpResponseBadRequest, JsonResponse
 from reservas.models import Reservation
@@ -7,6 +7,9 @@ from datetime import timedelta
 from django.utils.dateparse import parse_date
 from django.utils import timezone
 from django.utils.dateparse import parse_time
+from perfiles.decorators import admin_required
+from .forms import PuntualReservationForm, RecurrenteReservationForm
+from django.contrib import messages
 
 context = {
     "types_of_service": TypeOfService.objects.all(),
@@ -77,7 +80,7 @@ def disponibilidad_json(request, service_id):
         slots_del_dia = [res for res in slots_del_rango if res.date == dia]
 
         slots_libres = [
-            {"id": res.id, "time": res.time_start.strftime("%H:%M")}
+            {"id": res.id, "time": res.time_start.strftime("%H:%M"), "end": res.time_end.strftime("%H:%M"),}
             for res in slots_del_dia
             if res.user is None and res.status == Reservation.States.OPEN
         ]
@@ -97,3 +100,42 @@ def disponibilidad_json(request, service_id):
         dia += timedelta(days=1)
 
     return JsonResponse(resultado, safe=False)
+
+@admin_required
+def admin_interface_view(request):
+    return render(request, "admin_interface.html")
+
+@admin_required
+def create_reservation_view (request):
+    if request.method == 'POST':
+        form = PuntualReservationForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            Reservation.objects.create(
+                service=cd['service'],
+                date=cd['date'],
+                time_start=cd['time_start'],
+                time_end=cd['time_end'],
+            )
+            messages.success(request, "Slot puntual creado.")
+            return redirect('interface_admin')
+    else:
+        form = PuntualReservationForm()
+    return render(request, 'create_single_reservation.html', {'form': form})
+
+
+@admin_required
+def create_recurrent_reservations_view(request):
+    if request.method == 'POST':
+        form = RecurrenteReservationForm(request.POST)
+        if form.is_valid():
+            regla = form.save()
+            regla.generate_reservations()
+            messages.success(
+                request,
+                f"Regla creada y {regla.generated_reservations.count()} slots generados."
+            )
+            return redirect('interface_admin')
+    else:
+        form = RecurrenteReservationForm()
+    return render(request, 'create_recurrent_reservation.html', {'form': form})

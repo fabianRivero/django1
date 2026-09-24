@@ -64,7 +64,7 @@ document.body.addEventListener('htmx:afterSwap', function (event) {
               <div class="horario-item">
                   <button class="btn btn-outline-primary btn-sm btn-horario"
                     data-reservation="${h.id}">
-                    ${h.time}
+                    ${h.time}-${h.end}
                   </button>
               </div>
           `).join('')}

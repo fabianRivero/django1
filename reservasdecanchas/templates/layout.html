@@ -15,8 +15,14 @@
         <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
     </head>
     <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+
         {% include '_includes/header.html' %}
         <main>
+            <span class="welcome_message">
+            {% if request.user.username %}
+                Bienvenido, {{request.user.username}}
+            {% endif %}
+            </span>
             {% block content %}{% endblock %}
         </main>
         <script src="{% static 'js/calendar_script.js' %}"></script>

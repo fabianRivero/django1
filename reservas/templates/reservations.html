@@ -3,11 +3,7 @@
 {% block title %}Mis reservas{% endblock title %}
 
 {% block content %}
-    <span class="welcome_message">
-        {% if request.user.username %}
-            Bienvenido, {{request.user.username}}
-        {% endif %}
-    </span>
+
     <h1>Mis reservas</h1>
     <div class="content">
         <div class="reservations_content">

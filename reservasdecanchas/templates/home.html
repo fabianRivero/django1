@@ -3,11 +3,7 @@
 {% block title %}Página principal{% endblock title %}
 
 {% block content %}
-    <span class="welcome_message">
-        {% if request.user.username %}
-            Bienvenido, {{request.user.username}}
-        {% endif %}
-    </span>
+
     <h1>Reserva tu cancha</h1>
     <div class="content">
         <div class="services_list_container">
