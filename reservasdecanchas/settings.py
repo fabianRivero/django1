@@ -24,7 +24,7 @@ TEMPLATES_DIR = BASE_DIR / "reservasdecanchas" / "templates"
 SECRET_KEY = 'django-insecure-)myuqso_eh4a0@3&&cj4q(qolao^z-mfb+rsus&s#+9%s^!&b3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
