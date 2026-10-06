@@ -156,3 +156,5 @@ Q_CLUSTER = {
     'save_limit': 100,
     'orm': 'default',  
 }
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
