@@ -4,34 +4,32 @@
 
 {% block content %}
 
-    <h1>Reserva tu cancha</h1>
-    <div class="content">
-        <div class="services_list_container">
-            <ul>
-                {% if types_of_service %}
-                    {% for type_of_service in types_of_service %}
-                        <li>
-                            <img src="{{ type_of_service.image.url }}" alt="Cancha de {{ type_of_service.name }}">
-                            <div>
-                                <h3>{{ type_of_service.name }}</h3>
-                                <span class="service_text">Precio por hora: {{ type_of_service.price_per_hour }} $</span>
-                                <span class="service_text">Techado: {{ type_of_service.with_roof|yesno:"Sí,No" }}</span>
+<h1>Reserva tu cancha</h1>
+<div class="content">
+    <div class="services_list_container">
+        <ul>
+            {% if types_of_service %}
+            {% for type_of_service in types_of_service %}
+            <li>
+                <img src="{{ type_of_service.image.url }}" alt="Cancha de {{ type_of_service.name }}">
+                <div>
+                    <h3>{{ type_of_service.name }}</h3>
+                    <span class="service_text">Precio por hora: {{ type_of_service.price_per_hour }} $</span>
+                    <span class="service_text">Techado: {{ type_of_service.with_roof|yesno:"Sí,No" }}</span>
+                    <!-- se obtiene la info de la vista del open_calendar_modal y se renderiza en el modal-container -->
+                    <button hx-get="{% url 'open_calendar_modal' type_of_service.name %}" hx-target="#modal-container">
+                        Ver Calendario
+                    </button>
 
-                                <button 
-                                    hx-get="{% url 'open_calendar_modal' type_of_service.name %}" 
-                                    hx-target="#modal-container"
-                                > 
-                                    Ver Calendario
-                                </button>
-                            </div>
-                        </li>
-                    {% endfor %}
-                {% else %}
-                    <p>No hay servicios disponibles.</p>
-                {% endif %}
-            </ul>
-            <div id="modal-container"></div>
-        </div>
+                </div>
+            </li>
+            {% endfor %}
+            {% else %}
+            <p>No hay servicios disponibles.</p>
+            {% endif %}
+        </ul>
+        <div id="modal-container"></div>
     </div>
+</div>
 
 {% endblock %}

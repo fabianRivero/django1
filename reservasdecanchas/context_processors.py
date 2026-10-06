@@ -1,3 +1,4 @@
+#Context procesor que indica si el usuario es admin o superadmin
 def admin_nav(request):
 
     show = False

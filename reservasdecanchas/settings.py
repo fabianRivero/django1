@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-)myuqso_eh4a0@3&&cj4q(qolao^z-mfb+rsus&s#+9%s^!&b3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -40,14 +40,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     "django_htmx",
+    "django_q",
 
     "perfiles",
     "tipo_de_servicio",
     "reservas",
+    "notificaciones",
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -70,7 +73,10 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                #context processors personalizados
                 'reservasdecanchas.context_processors.admin_nav',
+                'notificaciones.context_processors.notifications_context',
             ],
         },
     },
@@ -114,7 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ES-es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/La_Paz'
 
 USE_I18N = True
 
@@ -139,4 +145,14 @@ MAILERS = {
     'default': {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
+}
+
+Q_CLUSTER = {
+    'name': 'reservas_cluster',
+    'workers': 2,
+    'recycle': 50,
+    'timeout': 60,
+    'compress': True,
+    'save_limit': 100,
+    'orm': 'default',  
 }

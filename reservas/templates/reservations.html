@@ -6,8 +6,8 @@
 
     <h1>Mis reservas</h1>
     <div class="content">
+        <h2>Reservas pendientes</h2>
         <div class="reservations_content">
-            <h2>Reservas pendientes</h2>
             <ul class="pendant_reservation_list">
                 {% if reservations %}
                     {% for reservation in reservations %}
@@ -56,7 +56,7 @@
         const box = document.createElement('div');
         box.className = 'confirm-box';
         box.innerHTML = `
-            <p>¿Seguro querés cancelar esta reserva?</p>
+            <p>¿Seguro quieres cancelar esta reserva?</p>
             <button class="btn btn-success btn-sm btn-confirm-yes">Sí</button>
             <button class="btn btn-secondary btn-sm btn-confirm-no">No</button>
         `;

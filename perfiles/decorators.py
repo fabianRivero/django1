@@ -2,7 +2,7 @@ from functools import wraps
 from django.http import HttpResponseForbidden
 from django.shortcuts import redirect
 
-
+# decorador personalizado para que se use en las views que sol sean acceseibles para admins o superuser
 def admin_required(view_func):
 
     @wraps(view_func)

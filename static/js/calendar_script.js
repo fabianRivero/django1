@@ -1,39 +1,29 @@
-document.body.addEventListener('htmx:afterSwap', function() {
-  const calendarEl = document.getElementById('calendar-target');
-  
-  if (calendarEl && window.FullCalendar) {
-    const calendar = new window.FullCalendar.Calendar(calendarEl, {
-      initialView: 'dayGridMonth',
-      events: '/api/eventos/'
-    });
-    calendar.render();
-  } else if (!window.FullCalendar) {
-    console.error("FullCalendar no está disponible en window.");
-  }
-});
-
+/* Se escucha cuando el modal es cargado */
 document.body.addEventListener('htmx:afterSwap', function (event) {
-    if (event.detail.target.id !== 'modal-container') return;
+  if (event.detail.target.id !== 'modal-container') return;
 
-    const calEl = document.body.querySelector('[id^="calendar-"]');
-    if (!calEl) return;
+  const calEl = document.body.querySelector('[id^="calendar-"]');
+  if (!calEl) return;
 
-    const serviceId = calEl.id.replace('calendar-', '');
+  const serviceId = calEl.id.replace('calendar-', '');
 
-    const calendar = new FullCalendar.Calendar(calEl, {
-      initialView: 'dayGridMonth',
-      locale: 'es',
-      firstDay: 1,
-      headerToolbar: {
-        left: 'prev,next today',
-        center: 'title',
-        right: ''
-      },
+  //se crea el calendario con fullcalendar y se le pasan las opciones
+  const calendar = new FullCalendar.Calendar(calEl, {
+    initialView: 'dayGridMonth',
+    locale: 'es',
+    firstDay: 1,
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: ''
+    },
 
-      datesSet: function (info) {
-        const inicio = info.startStr.slice(0, 10);   
-        const fin = info.endStr.slice(0, 10);       
-        fetch(`/api/disponibilidad/${serviceId}/?mes=${inicio}&fin=${fin}`)
+    /* se ejecuta cada vez que cambia el rango del mes */
+    datesSet: function (info) {
+      const inicio = info.startStr.slice(0, 10);
+      const fin = info.endStr.slice(0, 10);
+      //se arma el calendario con los slots disponibles
+      fetch(`/api/disponibilidad/${serviceId}/?mes=${inicio}&fin=${fin}`)
         .then(r => r.json())
         .then(data => {
           const events = data.map(d => ({
@@ -45,19 +35,19 @@ document.body.addEventListener('htmx:afterSwap', function (event) {
           calendar.removeAllEvents();
           calendar.addEventSource(events);
         });
-      },
+    },
+    /* cuando se hace click en un dia */
+    dateClick: function (info) {
+      const eventos = calendar.getEvents().filter(e => e.startStr === info.dateStr);
+      const horarios = eventos.length ? eventos[0].extendedProps.horarios : [];
+      const container = document.getElementById(`horarios-${serviceId}`);
+      //si en el dia hay horarios disponibles aparecen los botones, si no, se muestra un mensaje
+      if (!horarios.length) {
+        container.innerHTML = '<p class="text-muted">No hay horarios disponibles este día.</p>';
+        return;
+      }
 
-      dateClick: function (info) {
-        const eventos = calendar.getEvents().filter(e => e.startStr === info.dateStr);
-        const horarios = eventos.length ? eventos[0].extendedProps.horarios : [];
-        const container = document.getElementById(`horarios-${serviceId}`);
-
-        if (!horarios.length) {
-          container.innerHTML = '<p class="text-muted">No hay horarios disponibles este día.</p>';
-          return;
-        }
-
-        container.innerHTML = `
+      container.innerHTML = `
         <h6>Horarios disponibles — ${info.dateStr}</h6>
         <div class="d-flex flex-wrap gap-2">
           ${horarios.map(h => `
@@ -70,19 +60,19 @@ document.body.addEventListener('htmx:afterSwap', function (event) {
           `).join('')}
         </div>
         `;
-
-        container.addEventListener('click', function (e) {
-          const btn = e.target.closest('.btn-horario');
-          if (!btn) return;
-            mostrarConfirmacion(btn, btn.dataset.reservation);
-        });
-      },
-    });
+      //se agrega un event listener a los botones de horario
+      container.addEventListener('click', function (e) {
+        const btn = e.target.closest('.btn-horario');
+        if (!btn) return;
+        mostrarConfirmacion(btn, btn.dataset.reservation);
+      });
+    },
+  });
 
   calendar.render();
 });
 
-
+//muestra un cuadro de confirmacion antes de reservar
 function mostrarConfirmacion(btn, reservationId) {
   const existing = btn.parentElement.querySelector('.confirm-box');
   if (existing) return;
@@ -105,20 +95,24 @@ function mostrarConfirmacion(btn, reservationId) {
     box.remove();
   });
 }
-
+//funcion que hace la reserva
 function reservar(reservationId) {
-    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  //Busca en el DOM el input oculto que genera {% csrf_token %}
+  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-    fetch(`/reservar/${reservationId}/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-CSRFToken': csrfToken
-      }
-    })
+  //realiza la peticion fetch al backend para reservar
+  fetch(`/reservar/${reservationId}/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'X-CSRFToken': csrfToken
+    }
+  })
     .then(r => {
       if (r.ok) {
+        // se limpia el modal
         document.getElementById('modal-container').innerHTML = '';
+        // se redirige a la pagina de inicio
         window.location.href = '/';
       } else {
         alert('No se pudo hacer la reserva. Prueba otra vez.');

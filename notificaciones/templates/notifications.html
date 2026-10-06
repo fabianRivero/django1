@@ -1,0 +1,34 @@
+{% extends 'layout.html' %}
+
+{% block title %}Notificaciones{% endblock %}
+
+{% block content %}
+<h1>Tus notificaciones</h1>
+
+<div class="notifications-header">
+    <p>{{ unread_count }} no leídas</p>
+    {% if unread_count > 0 %}
+        <form action="{% url 'notificaciones:mark_all_as_read' %}" method="POST" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-secondary">Marcar todas como leídas</button>
+        </form>
+    {% endif %}
+</div>
+
+<ul class="notifications-list">
+    {% for n in notifications %}
+        <li class="notification-item {% if not n.read %}unread{% endif %}">
+            <div>
+                <strong>{{ n.title }}</strong>
+                <p>{{ n.body }}</p>
+                <small>{{ n.created_at|date:"d/m/Y H:i" }}</small>
+            </div>
+            {% if not n.read %}
+                <a href="{% url 'notificaciones:mark_as_read' n.id %}" class="btn btn-sm btn-primary">Marcar leída</a>
+            {% endif %}
+        </li>
+    {% empty %}
+        <li>No tienes notificaciones.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

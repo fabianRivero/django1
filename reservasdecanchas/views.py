@@ -18,7 +18,7 @@ context = {
 def home_view(request):
     return render(request, "home.html", context)
 
-
+#vista que retorna el calendario de reservas de un servicio para ingresarlo al modal
 def open_calendar_modal(request, service_name):
     if not request.htmx:
         return HttpResponseBadRequest("Esta vista solo admite peticiones HTMX.")
@@ -29,6 +29,7 @@ def open_calendar_modal(request, service_name):
     return render(request, "modal.html", {"service": n})
 
 
+#vista que devuelve un json con los eventos del calendario
 def eventos_json(request):
     reservas = Reservation.objects.all()
     eventos = [
@@ -41,14 +42,16 @@ def eventos_json(request):
     ]
     return JsonResponse(eventos, safe=False)
 
-
+#vista que devuelve un json con los slots del mes libres
 def disponibilidad_json(request, service_id):
+    #se obtiene del mes en el que se encuentra el calendario
     inicio_str = request.GET.get('mes')
+    #y el fin del mes
     fin_str = request.GET.get('fin')
 
     if not inicio_str or not fin_str:
         return JsonResponse([], safe=False)
-
+    #se parsea la fecha de inicio y de fin
     inicio = parse_date(inicio_str[:10])
     fin = parse_date(fin_str[:10])
 
@@ -68,30 +71,40 @@ def disponibilidad_json(request, service_id):
 
     ahora = timezone.localtime()
     hoy = ahora.date()
-    hora_actual = ahora.time()
+    hora_actual = timezone.localtime().time()
+    if hora_actual.tzinfo is not None:
+        hora_actual = hora_actual.replace(tzinfo=None)
 
     resultado = []
     dia = inicio
+
+    #bucle que recorre el mes dia por dia
     while dia < fin:
+        #se salta los dias pasados
         if dia < hoy:
             dia += timedelta(days=1)
             continue
 
+        #se obtiene los slots del dia
         slots_del_dia = [res for res in slots_del_rango if res.date == dia]
 
+        #se obtiene los slots libres
         slots_libres = [
             {"id": res.id, "time": res.time_start.strftime("%H:%M"), "end": res.time_end.strftime("%H:%M"),}
             for res in slots_del_dia
             if res.user is None and res.status == Reservation.States.OPEN
         ]
         
+        #si el dia es hoy, se filtra los slots que ya pasaron
         if dia == hoy:
             slots_libres = [
                 slot for slot in slots_libres
                 if parse_time(slot["time"]) > hora_actual
             ]
 
+        #si hay slots libres
         if slots_libres:
+            #se agrega al resultado
             resultado.append({
                 "date": dia.isoformat(),
                 "horarios": slots_libres,
@@ -105,9 +118,11 @@ def disponibilidad_json(request, service_id):
 def admin_interface_view(request):
     return render(request, "admin_interface.html")
 
+#vista que crea un slot puntual o renderiza el formulario para crearlo
 @admin_required
 def create_reservation_view (request):
     if request.method == 'POST':
+        #se guarda el formulario si es valido
         form = PuntualReservationForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
@@ -120,13 +135,15 @@ def create_reservation_view (request):
             messages.success(request, "Slot puntual creado.")
             return redirect('interface_admin')
     else:
+        #si no es POST, se renderiza el formulario
         form = PuntualReservationForm()
     return render(request, 'create_single_reservation.html', {'form': form})
 
-
+#vista que crea slots recurrentes o renderiza el formulario para crearlos
 @admin_required
 def create_recurrent_reservations_view(request):
     if request.method == 'POST':
+        #se guarda el formulario si es valido
         form = RecurrenteReservationForm(request.POST)
         if form.is_valid():
             regla = form.save()

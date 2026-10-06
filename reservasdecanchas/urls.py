@@ -3,6 +3,7 @@ from django.urls import path, include
 from .views import home_view, open_calendar_modal, eventos_json, disponibilidad_json, admin_interface_view, create_recurrent_reservations_view, create_reservation_view
 from perfiles import urls as perfiles_urls
 from reservas import urls as reservas_urls
+from notificaciones import urls as notificaciones_urls
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -16,6 +17,7 @@ urlpatterns = [
     path("interfaz_admin/", admin_interface_view, name="interface_admin"),
     path('interfaz_admin/puntual/', create_reservation_view, name='crear_puntual'),
     path('interfaz_admin/recurrente/', create_recurrent_reservations_view, name='crear_recurrente'),
+    path('notificaciones/', include(notificaciones_urls)),
     path('admin/', admin.site.urls),
 ]
 

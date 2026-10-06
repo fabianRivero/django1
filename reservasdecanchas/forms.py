@@ -4,7 +4,7 @@ from django.utils import timezone
 from tipo_de_servicio.models import TypeOfService
 from reservas.models import RecurringReservation
 
-
+#formulario para crear reserva puntual
 class PuntualReservationForm(forms.Form):
     service = forms.ModelChoiceField(
         queryset=TypeOfService.objects.all(),
@@ -23,6 +23,7 @@ class PuntualReservationForm(forms.Form):
         label="Hora de finalización",
     )
 
+    #metodo que valida el formulario
     def clean(self):
         cleaned = super().clean()
         date = cleaned.get('date')

@@ -3,13 +3,20 @@ from django.contrib.auth.decorators import login_required
 from .models import Reservation
 from django.http import HttpResponse
 
-context = {}
+from django.utils import timezone
+from django.db.models import Q
+
 
 @login_required
 def reservation_view(request):
-    user_reservations = Reservation.objects.filter(user = request.user)
-    context.update({"reservations": user_reservations})
-    return render(request, "reservations.html", context)
+    now = timezone.localtime()
+    user_reservations = Reservation.objects.filter(
+        user=request.user
+    ).filter(
+        Q(date__gt=now.date()) | Q(date=now.date(), time_start__gte=now.time())
+    ).order_by('date', 'time_start')
+    return render(request, "reservations.html", {"reservations": user_reservations})
+
 
 
 @login_required

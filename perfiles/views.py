@@ -8,13 +8,13 @@ from .models import UserProfile
 
 def register_view(request):
     error_message = None
-    
+    # metodo post para registrar el usuario
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password")
-
+            # si el usuario ya existe sale mensaje de error
             if User.objects.filter(username=username).exists():
                 error_message = "El nombre de usuario no está disponible."
                 return render(request, "register.html", {"form": form, "error": error_message})
@@ -26,6 +26,7 @@ def register_view(request):
 
         return render(request, "register.html", {"form": form, "error": error_message})
 
+    #si la peticion no es post devuelve el render de register.html
     form = RegisterForm()
     return render(request, "register.html", {"form": form, "error": error_message})
 

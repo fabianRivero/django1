@@ -2,41 +2,46 @@
 
 <header class="header">
   <div class="container">
-    <a class="" href="{% url 'home' %}"><img src="{% static "images/logo.png" %}" alt="logo"></a>
+    <a href="{% url 'home' %}"><img src="{% static "images/logo.png" %}" alt="logo"></a>
 
+    <div class="hamburger" id="hamburgerBtn" aria-label="Menú" aria-expanded="false">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
 
     <div class="header_links" id="navbarMain">
-      <ul class="">
-        <li class="">
-          <a class="" href="{% url 'home' %}">Inicio</a>
-        </li>
+      <ul>
+        <li><a href="{% url 'home' %}">Inicio</a></li>
         {% if user.is_authenticated %}
-            <li class="">
-                <a class="" href="{% url 'reservations' %}">Mis reservas</a>
-            </li>
-
-            {% if show_admin_link %}
-                <li class="">
-                    <a class="" href="{% url 'interface_admin' %}">Administrador</a>
-                </li>
-            {% endif %}
+          <li><a href="{% url 'reservations' %}">Mis reservas</a></li>
+          {% if show_admin_link %}
+            <li><a href="{% url 'interface_admin' %}">Administrador</a></li>
+          {% endif %}
+          <li><a href="{% url 'notificaciones:notifications' %}">Notificaciones</a></li>
+          <li>
+            <form action="{% url "logout" %}" method="POST">
+              {% csrf_token %}
+              <button type="submit">Cerrar sesión</button>
+            </form>
+          </li>
+        {% else %}
+          <li><a href="{% url 'login' %}">Iniciar sesión</a></li>
+          <li><a href="{% url 'register' %}">Registrarse</a></li>
         {% endif %}
-
       </ul>
     </div>
 
     <div class="header_sub_menu">
       {% if user.is_authenticated %}
-        <div class="header_sub_menu_user">
-            <form action="{% url "logout" %}" method="POST">
-                {% csrf_token %}
-                <button class="" type="submit"">Cerrar sesión</button>
-            </form>
-        </div>
-        <img src="{% static "images/bell.png" %}" alt="Campana de notificaciones">
-      {% else %}
-        <a class="" href="{% url 'login' %}">Iniciar sesión</a>
-        <a class="" href="{% url 'register' %}">Registrarse</a>
+        <a href="{% url 'notificaciones:notifications' %}" class="notification-bell" aria-label="Notificaciones">
+          <img src="{% static "images/bell.png" %}" alt="Campana de notificaciones">
+          <span hx-get="{% url 'notificaciones:badge' %}"
+                hx-trigger="load, every 30s"
+                hx-swap="innerHTML">
+              {% include 'badge.html' with unread_count=unread_count %}
+          </span>
+        </a>
       {% endif %}
     </div>
   </div>

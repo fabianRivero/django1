@@ -4,6 +4,7 @@ from django.forms import ValidationError
 from datetime import timedelta
 from tipo_de_servicio.models import TypeOfService
 
+#modelo de reservas recurrentes
 class RecurringReservation(models.Model):
     DAYS_OF_WEEK = [
         (0, "Lunes"),
@@ -53,20 +54,26 @@ class RecurringReservation(models.Model):
     def __str__(self):
         return f"Regla {self.rule_type} desde {self.start_date} hasta {self.end_date}"
 
+    #metodo que genera las reservaciones basadas en la regla
     def generate_reservations(self):
 
         current = self.start_date
 
+        #bucle que recorre las fechas desde la fecha de inicio hasta la fecha de finalizacion
         while current <= self.end_date:
 
+            #si la regla es diaria, se permite la fecha
             if self.rule_type == "daily":
                 allowed = True
 
+            #si la regla es semanal, se permite la fecha si el dia de la semana esta en la lista de dias de la semana
             elif self.rule_type == "weekly":
                 allowed = current.weekday() in self.days_of_week
 
+            #si la fecha es permitida
             if allowed:
                 
+                #filtra las reservaciones que se solapan con la fecha y la hora
                 overlap = Reservation.objects.filter(
                     service = self.service,
                     date=current,
@@ -74,6 +81,7 @@ class RecurringReservation(models.Model):
                     time_end__gt=self.time_start
                 )
 
+                #si no hay solapamiento, se crea la reservacion
                 if not overlap.exists():
                     Reservation.objects.create(
                         date=current,
@@ -98,6 +106,8 @@ class Reservation(models.Model):
         OPEN = 'open'         
         TAKEN = 'taken' 
 
+    #campo que relaciona la reservacion con la regla de reservacion recurrente
+    #Si la reserva pertenece a una reserva recurrente, este campo almacena la regla
     recurring_source = models.ForeignKey(
         RecurringReservation,
         on_delete=models.CASCADE,
@@ -117,6 +127,7 @@ class Reservation(models.Model):
         verbose_name = 'Reserva'
         verbose_name_plural = 'Reservas'
 
+    #Metodo que filtra los errores de la reservacion
     def filter_reservation_errors (self):
         if self.time_end <= self.time_start:
             raise ValidationError("La hora de finalización debe ser posterior a la hora de inicio.")
