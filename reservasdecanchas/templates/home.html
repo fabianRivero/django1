@@ -3,6 +3,7 @@
 {% block title %}Página principal{% endblock title %}
 
 {% block content %}
+{% load static %}
 
 <h1>Reserva tu cancha</h1>
 <div class="content">
@@ -11,7 +12,11 @@
             {% if types_of_service %}
             {% for type_of_service in types_of_service %}
             <li>
-                <img src="{{ type_of_service.image.url }}" alt="Cancha de {{ type_of_service.name }}">
+                {% if type_of_service.image_path %}
+                <img src="{% static type_of_service.image_path %}" alt="Cancha de {{ type_of_service.name }}">
+                {% else %}
+                <img src="{% static 'images/placeholder.png' %}" alt="Cancha de {{ type_of_service.name }}">
+                {% endif %}
                 <div>
                     <h3>{{ type_of_service.name }}</h3>
                     <span class="service_text">Precio por hora: {{ type_of_service.price_per_hour }} $</span>

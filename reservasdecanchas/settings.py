@@ -24,7 +24,7 @@ TEMPLATES_DIR = BASE_DIR / "reservasdecanchas" / "templates"
 SECRET_KEY = 'django-insecure-)myuqso_eh4a0@3&&cj4q(qolao^z-mfb+rsus&s#+9%s^!&b3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -135,6 +135,9 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 LOGIN_REDIRECT_URL = "home"
 
