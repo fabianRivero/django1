@@ -147,6 +147,17 @@ main .content{
     justify-content: center;
 }
 
+.credenciales {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #e0f7fa;
+    border: 1px solid #b2ebf2;
+    border-radius: 5px;
+    text-align: center;
+}
+
 /* ========================================
    SERVICIOS (grid de cards)
    ======================================== */
