@@ -16,7 +16,7 @@ Incluye cómo tomar una reserva y cómo el administrador crea reservas individua
   - [](#)
     - [Crear reserva recurrente](#crear-reserva-recurrente)
       - [Pasos](#pasos-2)
-
+  - [Últimas consideraciones](#últimas-consideraciones)
 ---
 
 ## Cómo tomar una reserva
@@ -88,3 +88,6 @@ Ejemplo:
 
 Se pueden crear reservas recurrentes de forma diaria y semanal. de forma diaria se crean reservas todos los dias 
 que estan entre **Fecha de inicio** y **Fecha de finalización**. De forma semanal se reservan solo los dias escogidos en **Dias de la semana** entre **Fecha de inicio** y **Fecha de finalización**.
+
+## Últimas consideraciones
+Cada vez que Render se redespliega después de dormir (15 min sin tráfico), el disco se reconstruye desde cero. El db.sqlite3 que tenía las reservas que se hicieron se elimina y empieza en blanco. La solución para esto es usar una base de datos persistente, pero, para este ejercicio, preferí no usarlo para no sobre complicar el proyecto y evitar usar un servicio que tenga solo unos cuantos dias de servicio gratuito y luego se elimine la base de datos igualmente.
