@@ -114,10 +114,13 @@ env
 # mypy 
 .mypy_cache/ 
 
-# Sublime Text # 
-*.tmlanguage.cache 
-*.tmPreferences.cache 
-*.stTheme.cache 
+# Sublime Text #
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+
+# Local tool indexes (not part of the project) #
+.codegraph/
 *.sublime-workspace 
 *.sublime-project 
 
